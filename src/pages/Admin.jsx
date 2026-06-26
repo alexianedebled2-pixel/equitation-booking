@@ -83,9 +83,15 @@ export default function Admin() {
     const startMin = newSlot.time_start.slice(3, 5)
     const endHour = startHour === 23 ? 0 : startHour + 1
     const time_end = `${String(endHour).padStart(2, '0')}:${startMin}`
-    const { error } = await supabase.from('slots').insert({ ...newSlot, time_end })
-    if (!error) {
-      setMessage({ type: 'success', text: 'Créneau créé !' })
+    const { data, error } = await supabase.from('slots').insert({ ...newSlot, time_end }).select().single()
+    if (!error && data) {
+      // Crée l'événement dans Google Agenda
+      await fetch('/.netlify/functions/update-calendar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slot_id: data.id, action: 'create' })
+      })
+      setMessage({ type: 'success', text: 'Créneau créé et ajouté à Google Agenda !' })
       setNewSlot({ title: '', date: '', time_start: '', max_places: 6 })
       setShowForm(false)
       fetchSlots()
@@ -209,10 +215,16 @@ export default function Admin() {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
           <h1 style={{ color: COLORS.navy, margin: 0, fontSize: 'clamp(1.1rem, 4vw, 1.6rem)' }}>🧑‍🏫 Espace Moniteurs</h1>
-          <button onClick={() => { setShowForm(!showForm); setEditingSlot(null) }}
-            style={{ background: COLORS.sky, color: 'white', border: 'none', padding: '0.6rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>
-            {showForm ? '✕ Fermer' : '➕ Nouveau créneau'}
-          </button>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <button onClick={() => window.location.href = '/.netlify/functions/google-auth'}
+              style={{ background: '#4285f4', color: 'white', border: 'none', padding: '0.6rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>
+              📅 Connecter Google Agenda
+            </button>
+            <button onClick={() => { setShowForm(!showForm); setEditingSlot(null) }}
+              style={{ background: COLORS.sky, color: 'white', border: 'none', padding: '0.6rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>
+              {showForm ? '✕ Fermer' : '➕ Nouveau créneau'}
+            </button>
+          </div>
         </div>
 
         {message && (
