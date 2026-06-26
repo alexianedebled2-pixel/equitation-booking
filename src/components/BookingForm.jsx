@@ -28,6 +28,19 @@ export default function BookingForm({ slot, onSuccess, onCancel }) {
       return
     }
 
+    const { data: existing } = await supabase
+      .from('bookings')
+      .select('id')
+      .eq('slot_id', slot.id)
+      .eq('child_name', form.child_name)
+      .eq('parent_name', form.parent_name)
+
+    if (existing && existing.length > 0) {
+      setError(`${form.child_name} est déjà inscrit(e) à ce créneau !`)
+      setLoading(false)
+      return
+    }
+
     const { error: insertError } = await supabase
       .from('bookings')
       .insert({ ...form, slot_id: slot.id })

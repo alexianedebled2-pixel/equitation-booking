@@ -47,13 +47,23 @@ export default function Home() {
           <div style={{ textAlign: 'left' }}>
             <button onClick={() => setSelectedSlot(null)}
               style={{ background: 'none', border: 'none', color: '#1a2744', cursor: 'pointer', fontSize: '0.95rem', marginBottom: '1rem' }}>
-              ← Retour
+              ← Retour aux créneaux
             </button>
             <BookingForm
               slot={selectedSlot}
               onSuccess={() => setConfirmed(true)}
               onCancel={() => setSelectedSlot(null)}
             />
+          </div>
+
+        ) : showSlots ? (
+          <div style={{ textAlign: 'left' }}>
+            <button onClick={() => setShowSlots(false)}
+              style={{ background: 'none', border: 'none', color: '#1a2744', cursor: 'pointer', fontSize: '0.95rem', marginBottom: '1rem' }}>
+              ← Retour à l'accueil
+            </button>
+            <h2 style={{ color: '#1a2744' }}>Créneaux disponibles</h2>
+            <SlotList onSelectSlot={setSelectedSlot} />
           </div>
 
         ) : (
@@ -72,7 +82,6 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Calendrier */}
             <div style={{ background: 'white', borderRadius: '12px', padding: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,0.08)', marginBottom: '2rem', textAlign: 'left' }}>
               <h2 style={{ color: '#1a2744', marginTop: 0, fontSize: '1.2rem' }}>📅 Agenda de l'écurie</h2>
               <Calendar onSelectSlot={setSelectedSlot} />
@@ -83,17 +92,6 @@ export default function Home() {
               style={{ background: '#1a2744', color: 'white', border: 'none', padding: '1rem 2.5rem', fontSize: '1.1rem', borderRadius: '8px', cursor: 'pointer', letterSpacing: '1px' }}>
               Voir tous les créneaux disponibles →
             </button>
-
-            {showSlots && (
-              <div style={{ textAlign: 'left', marginTop: '2rem' }}>
-                <button onClick={() => setShowSlots(false)}
-                  style={{ background: 'none', border: 'none', color: '#1a2744', cursor: 'pointer', fontSize: '0.95rem', marginBottom: '1rem' }}>
-                  ← Masquer
-                </button>
-                <h2 style={{ color: '#1a2744' }}>Créneaux disponibles</h2>
-                <SlotList onSelectSlot={setSelectedSlot} />
-              </div>
-            )}
           </div>
         )}
 
