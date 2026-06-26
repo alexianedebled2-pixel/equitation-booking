@@ -5,7 +5,8 @@ const COLORS = {
   navy: '#1a2744',
   cours: '#4aa8d8',
   stage: '#e74c3c',
-  concours: '#2ecc71'
+  concours: '#2ecc71',
+  libre: '#f1c40f'
 }
 
 const MOIS = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
@@ -76,7 +77,7 @@ export default function Calendar({ onSelectSlot }) {
 
       {/* Légende */}
       <div style={{ display: 'flex', gap: '1.2rem', flexWrap: 'wrap', marginBottom: '1.2rem', justifyContent: 'center' }}>
-        {[['cours', 'Cours'], ['stage', 'Stage'], ['concours', 'Concours']].map(([type, label]) => (
+       {[['cours', 'Cours'], ['stage', 'Stage'], ['concours', 'Concours'], ['libre', 'Événement']].map(([type, label]) => (
           <span key={type} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#555' }}>
             <span style={{ width: '24px', height: '8px', borderRadius: '4px', background: COLORS[type], display: 'inline-block' }} />
             {label}
@@ -205,6 +206,15 @@ export default function Calendar({ onSelectSlot }) {
               {e.type === 'concours' && (
                 <>
                   <strong style={{ color: COLORS.concours }}>🏆 Concours — {e.title}</strong>
+                  <p style={{ margin: '0.3rem 0', color: '#555', fontSize: '0.9rem' }}>
+                    Du {new Date(e.date_start + 'T12:00:00').toLocaleDateString('fr-FR')} au {new Date(e.date_end + 'T12:00:00').toLocaleDateString('fr-FR')}
+                  </p>
+                  {e.description && <p style={{ margin: '0.2rem 0', color: '#555', fontSize: '0.85rem' }}>{e.description}</p>}
+                </>
+              )}
+              {e.type === 'libre' && (
+                <>
+                  <strong style={{ color: '#b7950b' }}>📌 {e.title}</strong>
                   <p style={{ margin: '0.3rem 0', color: '#555', fontSize: '0.9rem' }}>
                     Du {new Date(e.date_start + 'T12:00:00').toLocaleDateString('fr-FR')} au {new Date(e.date_end + 'T12:00:00').toLocaleDateString('fr-FR')}
                   </p>

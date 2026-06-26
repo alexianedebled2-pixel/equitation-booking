@@ -5,7 +5,8 @@ const ADMIN_PASSWORD = '0201'
 
 const EVENT_TYPES = [
   { value: 'stage', label: '🏕️ Stage' },
-  { value: 'concours', label: '🏆 Concours' }
+  { value: 'concours', label: '🏆 Concours' },
+  { value: 'libre', label: '📌 Événement libre (fête, entraînement...)' }
 ]
 
 const COURS_TYPES = [
@@ -253,7 +254,7 @@ useEffect(() => {
             <button onClick={() => setMessage(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}>✕</button>
           </div>
         )}
-        
+
 {showEventForm && (
           <div style={{ background: 'white', borderRadius: '16px', padding: '1.2rem', marginBottom: '1.5rem', boxShadow: '0 4px 16px rgba(231,76,60,0.15)', border: `2px solid ${COLORS.red}` }}>
             <h3 style={{ color: COLORS.navy, marginTop: 0, fontSize: '1rem' }}>➕ Nouveau stage ou concours</h3>
@@ -526,7 +527,29 @@ useEffect(() => {
             )}
           </div>
         ))}
-
+<h3 style={{ color: COLORS.navy, marginTop: '2rem', fontSize: '1rem' }}>📌 Stages, Concours & Événements</h3>
+        {events.length === 0 && <p style={{ color: '#888' }}>Aucun événement pour le moment.</p>}
+        {events.map(event => (
+          <div key={event.id} style={{ background: 'white', borderRadius: '12px', marginBottom: '0.8rem', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', padding: '0.8rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem', borderLeft: `5px solid ${event.type === 'stage' ? COLORS.red : event.type === 'concours' ? COLORS.green : '#f1c40f'}` }}>
+            <div>
+              <strong style={{ color: COLORS.navy, fontSize: '0.95rem' }}>
+                {event.type === 'stage' ? '🏕️' : event.type === 'concours' ? '🏆' : '📌'} {event.title}
+              </strong>
+              <p style={{ margin: '0.2rem 0', color: '#555', fontSize: '0.85rem' }}>
+                Du {new Date(event.date_start + 'T12:00:00').toLocaleDateString('fr-FR')} au {new Date(event.date_end + 'T12:00:00').toLocaleDateString('fr-FR')}
+              </p>
+              {event.description && <p style={{ margin: '0.1rem 0', color: '#888', fontSize: '0.8rem' }}>{event.description}</p>}
+            </div>
+            <button onClick={async () => {
+              if (!confirm('Supprimer cet événement ?')) return
+              await supabase.from('events').delete().eq('id', event.id)
+              fetchEvents()
+            }}
+              style={{ background: COLORS.red, color: 'white', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.82rem' }}>
+              🗑️ Supprimer
+            </button>
+          </div>
+        ))}
         {slotsPasses.length > 0 && (
           <>
             <h3 style={{ color: '#888', marginTop: '1.5rem', fontSize: '1rem' }}>📁 Créneaux passés</h3>
