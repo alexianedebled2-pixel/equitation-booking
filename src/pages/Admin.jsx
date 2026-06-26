@@ -162,17 +162,22 @@ export default function Admin() {
       time_start: slot.time_start.slice(0, 5),
       max_places: slot.max_places
     })
+    window.scrollTo(0, 0)
   }
+
+  const Header = () => (
+    <header style={{ background: COLORS.navy, padding: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <img src="/logo.png" alt="Ecurie de Groynne" style={{ height: '60px', mixBlendMode: 'screen', filter: 'invert(1)' }} />
+    </header>
+  )
 
   if (!auth) return (
     <div style={{ fontFamily: 'Georgia, serif', background: COLORS.bg, minHeight: '100vh' }}>
-      <header style={{ background: COLORS.navy, padding: '1.5rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <img src="/logo.png" alt="Ecurie de Groynne" style={{ height: '80px', mixBlendMode: 'screen', filter: 'invert(1)' }} />
-      </header>
-      <div style={{ maxWidth: '400px', margin: '5rem auto', padding: '2rem' }}>
-        <div style={{ background: 'white', borderRadius: '16px', padding: '2.5rem', boxShadow: '0 4px 20px rgba(26,39,68,0.12)', textAlign: 'center' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🔒</div>
-          <h2 style={{ color: COLORS.navy, marginBottom: '1.5rem' }}>Espace Moniteurs</h2>
+      <Header />
+      <div style={{ maxWidth: '400px', margin: '3rem auto', padding: '1rem' }}>
+        <div style={{ background: 'white', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 20px rgba(26,39,68,0.12)', textAlign: 'center' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🔒</div>
+          <h2 style={{ color: COLORS.navy, marginBottom: '1.5rem', fontSize: '1.3rem' }}>Espace Moniteurs</h2>
           <input
             type="password"
             placeholder="Mot de passe"
@@ -198,228 +203,232 @@ export default function Admin() {
 
   return (
     <div style={{ fontFamily: 'Georgia, serif', background: COLORS.bg, minHeight: '100vh' }}>
-      <header style={{ background: COLORS.navy, padding: '1.5rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <img src="/logo.png" alt="Ecurie de Groynne" style={{ height: '80px', mixBlendMode: 'screen', filter: 'invert(1)' }} />
-      </header>
+      <Header />
 
-      <main style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem' }}>
+      <main style={{ maxWidth: '960px', margin: '0 auto', padding: '1rem' }}>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h1 style={{ color: COLORS.navy, margin: 0 }}>🧑‍🏫 Espace Moniteurs</h1>
-          <button onClick={() => setShowForm(!showForm)}
-            style={{ background: COLORS.sky, color: 'white', border: 'none', padding: '0.7rem 1.5rem', borderRadius: '8px', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+          <h1 style={{ color: COLORS.navy, margin: 0, fontSize: 'clamp(1.1rem, 4vw, 1.6rem)' }}>🧑‍🏫 Espace Moniteurs</h1>
+          <button onClick={() => { setShowForm(!showForm); setEditingSlot(null) }}
+            style={{ background: COLORS.sky, color: 'white', border: 'none', padding: '0.6rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>
             {showForm ? '✕ Fermer' : '➕ Nouveau créneau'}
           </button>
         </div>
 
         {message && (
-          <div style={{ background: message.type === 'success' ? '#d4edda' : '#f8d7da', color: message.type === 'success' ? '#155724' : '#721c24', padding: '0.8rem 1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ background: message.type === 'success' ? '#d4edda' : '#f8d7da', color: message.type === 'success' ? '#155724' : '#721c24', padding: '0.8rem 1rem', borderRadius: '8px', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span>{message.text}</span>
             <button onClick={() => setMessage(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}>✕</button>
           </div>
         )}
 
         {showForm && (
-          <div style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', marginBottom: '2rem', boxShadow: '0 4px 16px rgba(74,168,216,0.15)', border: `2px solid ${COLORS.sky}` }}>
-            <h3 style={{ color: COLORS.navy, marginTop: 0 }}>➕ Nouveau créneau</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div style={{ background: 'white', borderRadius: '16px', padding: '1.2rem', marginBottom: '1.5rem', boxShadow: '0 4px 16px rgba(74,168,216,0.15)', border: `2px solid ${COLORS.sky}` }}>
+            <h3 style={{ color: COLORS.navy, marginTop: 0, fontSize: '1rem' }}>➕ Nouveau créneau</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.5rem', fontWeight: 'bold' }}>Niveaux *</label>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Niveaux *</label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                   {COURS_TYPES.map(c => (
-                    <label key={c} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', padding: '0.3rem 0.5rem', borderRadius: '6px', background: newSlot.title.split(' + ').includes(c) ? COLORS.skyLight : 'transparent' }}>
+                    <label key={c} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', padding: '0.2rem 0.4rem', borderRadius: '6px', background: newSlot.title.split(' + ').includes(c) ? COLORS.skyLight : 'transparent' }}>
                       <input type="checkbox" checked={newSlot.title.split(' + ').includes(c)} onChange={() => toggleCours(c)}
-                        style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: COLORS.navy }} />
-                      <span style={{ color: COLORS.navy, fontWeight: newSlot.title.split(' + ').includes(c) ? 'bold' : 'normal' }}>{c}</span>
+                        style={{ width: '15px', height: '15px', cursor: 'pointer', accentColor: COLORS.navy }} />
+                      <span style={{ color: COLORS.navy, fontSize: '0.9rem', fontWeight: newSlot.title.split(' + ').includes(c) ? 'bold' : 'normal' }}>{c}</span>
                     </label>
                   ))}
                 </div>
-                {newSlot.title && <p style={{ color: COLORS.sky, fontSize: '0.85rem', marginTop: '0.5rem', fontStyle: 'italic' }}>✓ {newSlot.title}</p>}
+                {newSlot.title && <p style={{ color: COLORS.sky, fontSize: '0.8rem', marginTop: '0.4rem', fontStyle: 'italic' }}>✓ {newSlot.title}</p>}
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                 <div>
-                  <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold' }}>Date *</label>
+                  <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Date *</label>
                   <input type="date" value={newSlot.date} onChange={e => setNewSlot({ ...newSlot, date: e.target.value })}
-                    style={{ width: '100%', padding: '0.7rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '1rem' }} />
+                    style={{ width: '100%', padding: '0.6rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '0.95rem', boxSizing: 'border-box' }} />
                 </div>
                 <div>
-                  <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold' }}>Heure de début *</label>
+                  <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Heure de début *</label>
                   <input type="time" value={newSlot.time_start} onChange={e => setNewSlot({ ...newSlot, time_start: e.target.value })}
-                    style={{ width: '100%', padding: '0.7rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '1rem' }} />
+                    style={{ width: '100%', padding: '0.6rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '0.95rem', boxSizing: 'border-box' }} />
                 </div>
                 <div>
-                  <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold' }}>Nombre de places *</label>
+                  <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Nb places *</label>
                   <input type="number" min="1" max="20" value={newSlot.max_places} onChange={e => setNewSlot({ ...newSlot, max_places: parseInt(e.target.value) })}
-                    style={{ width: '100%', padding: '0.7rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '1rem' }} />
+                    style={{ width: '100%', padding: '0.6rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '0.95rem', boxSizing: 'border-box' }} />
                 </div>
+                <button onClick={createSlot}
+                  style={{ background: COLORS.navy, color: 'white', border: 'none', padding: '0.7rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.95rem', width: '100%' }}>
+                  Créer le créneau
+                </button>
               </div>
             </div>
-            <button onClick={createSlot}
-              style={{ marginTop: '1rem', background: COLORS.navy, color: 'white', border: 'none', padding: '0.8rem 2rem', borderRadius: '8px', cursor: 'pointer', fontSize: '1rem' }}>
-              Créer le créneau
-            </button>
           </div>
         )}
 
         {editingSlot && (
-          <div style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', marginBottom: '2rem', boxShadow: '0 4px 16px rgba(255,165,0,0.15)', border: '2px solid orange' }}>
-            <h3 style={{ color: COLORS.navy, marginTop: 0 }}>✏️ Modifier le créneau</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div style={{ background: 'white', borderRadius: '16px', padding: '1.2rem', marginBottom: '1.5rem', boxShadow: '0 4px 16px rgba(255,165,0,0.2)', border: '2px solid orange' }}>
+            <h3 style={{ color: COLORS.navy, marginTop: 0, fontSize: '1rem' }}>✏️ Modifier le créneau</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.5rem', fontWeight: 'bold' }}>Niveaux *</label>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Niveaux *</label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                   {COURS_TYPES.map(c => (
-                    <label key={c} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', padding: '0.3rem 0.5rem', borderRadius: '6px', background: editForm.title && editForm.title.split(' + ').includes(c) ? '#fff3e0' : 'transparent' }}>
+                    <label key={c} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', padding: '0.2rem 0.4rem', borderRadius: '6px', background: editForm.title && editForm.title.split(' + ').includes(c) ? '#fff3e0' : 'transparent' }}>
                       <input type="checkbox" checked={editForm.title ? editForm.title.split(' + ').includes(c) : false} onChange={() => toggleEditCours(c)}
-                        style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: 'orange' }} />
-                      <span style={{ color: COLORS.navy }}>{c}</span>
+                        style={{ width: '15px', height: '15px', cursor: 'pointer', accentColor: 'orange' }} />
+                      <span style={{ color: COLORS.navy, fontSize: '0.9rem' }}>{c}</span>
                     </label>
                   ))}
                 </div>
-                {editForm.title && <p style={{ color: 'orange', fontSize: '0.85rem', marginTop: '0.5rem', fontStyle: 'italic' }}>✓ {editForm.title}</p>}
+                {editForm.title && <p style={{ color: 'orange', fontSize: '0.8rem', marginTop: '0.4rem', fontStyle: 'italic' }}>✓ {editForm.title}</p>}
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                 <div>
-                  <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold' }}>Date *</label>
+                  <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Date *</label>
                   <input type="date" value={editForm.date || ''} onChange={e => setEditForm({ ...editForm, date: e.target.value })}
-                    style={{ width: '100%', padding: '0.7rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '1rem' }} />
+                    style={{ width: '100%', padding: '0.6rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '0.95rem', boxSizing: 'border-box' }} />
                 </div>
                 <div>
-                  <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold' }}>Heure de début *</label>
+                  <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Heure de début *</label>
                   <input type="time" value={editForm.time_start || ''} onChange={e => setEditForm({ ...editForm, time_start: e.target.value })}
-                    style={{ width: '100%', padding: '0.7rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '1rem' }} />
+                    style={{ width: '100%', padding: '0.6rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '0.95rem', boxSizing: 'border-box' }} />
                 </div>
                 <div>
-                  <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold' }}>Nombre de places *</label>
+                  <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Nb places *</label>
                   <input type="number" min="1" max="20" value={editForm.max_places || 6} onChange={e => setEditForm({ ...editForm, max_places: parseInt(e.target.value) })}
-                    style={{ width: '100%', padding: '0.7rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '1rem' }} />
+                    style={{ width: '100%', padding: '0.6rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '0.95rem', boxSizing: 'border-box' }} />
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <button onClick={updateSlot}
+                    style={{ background: 'orange', color: 'white', border: 'none', padding: '0.7rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem', flex: 1 }}>
+                    Sauvegarder
+                  </button>
+                  <button onClick={() => { setEditingSlot(null); setEditForm({}) }}
+                    style={{ background: '#ccc', border: 'none', padding: '0.7rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem' }}>
+                    Annuler
+                  </button>
                 </div>
               </div>
-            </div>
-            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-              <button onClick={updateSlot}
-                style={{ background: 'orange', color: 'white', border: 'none', padding: '0.8rem 2rem', borderRadius: '8px', cursor: 'pointer', fontSize: '1rem' }}>
-                Sauvegarder les modifications
-              </button>
-              <button onClick={() => { setEditingSlot(null); setEditForm({}) }}
-                style={{ background: '#ccc', border: 'none', padding: '0.8rem 1.5rem', borderRadius: '8px', cursor: 'pointer', fontSize: '1rem' }}>
-                Annuler
-              </button>
             </div>
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
-          <div style={{ background: COLORS.navy, color: 'white', borderRadius: '12px', padding: '1.2rem', textAlign: 'center' }}>
-            <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>{slots.length}</div>
-            <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>Total créneaux</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.7rem', marginBottom: '1.5rem' }}>
+          <div style={{ background: COLORS.navy, color: 'white', borderRadius: '12px', padding: '0.8rem', textAlign: 'center' }}>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{slots.length}</div>
+            <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>Total créneaux</div>
           </div>
-          <div style={{ background: COLORS.sky, color: 'white', borderRadius: '12px', padding: '1.2rem', textAlign: 'center' }}>
-            <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>{slotsAVenir.length}</div>
-            <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>À venir</div>
+          <div style={{ background: COLORS.sky, color: 'white', borderRadius: '12px', padding: '0.8rem', textAlign: 'center' }}>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{slotsAVenir.length}</div>
+            <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>À venir</div>
           </div>
-          <div style={{ background: COLORS.green, color: 'white', borderRadius: '12px', padding: '1.2rem', textAlign: 'center' }}>
-            <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>{slots.reduce((acc, s) => acc + (s.booked_count || 0), 0)}</div>
-            <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>Total inscrits</div>
+          <div style={{ background: COLORS.green, color: 'white', borderRadius: '12px', padding: '0.8rem', textAlign: 'center' }}>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{slots.reduce((acc, s) => acc + (s.booked_count || 0), 0)}</div>
+            <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>Total inscrits</div>
           </div>
         </div>
 
-        <h3 style={{ color: COLORS.navy }}>📅 Créneaux à venir</h3>
+        <h3 style={{ color: COLORS.navy, fontSize: '1rem' }}>📅 Créneaux à venir</h3>
         {slotsAVenir.length === 0 && <p style={{ color: '#888' }}>Aucun créneau à venir.</p>}
         {slotsAVenir.map(slot => (
           <div key={slot.id} style={{ background: 'white', borderRadius: '12px', marginBottom: '0.8rem', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', overflow: 'hidden', border: `2px solid ${openSlot === slot.id ? COLORS.sky : 'transparent'}` }}>
             <div onClick={() => toggleSlot(slot.id)}
-              style={{ padding: '1rem 1.5rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              style={{ padding: '0.8rem 1rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
               <div>
-                <span style={{ background: COLORS.skyLight, color: COLORS.navy, padding: '0.2rem 0.7rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold', marginRight: '0.8rem' }}>
+                <span style={{ background: COLORS.skyLight, color: COLORS.navy, padding: '0.2rem 0.6rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold', marginRight: '0.5rem' }}>
                   {new Date(slot.date).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })}
                 </span>
-                <strong style={{ color: COLORS.navy }}>{slot.title}</strong>
-                <span style={{ color: '#888', marginLeft: '0.5rem', fontSize: '0.9rem' }}>à {slot.time_start.slice(0,5)}</span>
+                <strong style={{ color: COLORS.navy, fontSize: '0.9rem' }}>{slot.title}</strong>
+                <span style={{ color: '#888', marginLeft: '0.4rem', fontSize: '0.85rem' }}>à {slot.time_start.slice(0,5)}</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <span style={{ background: slot.places_remaining > 0 ? '#d4edda' : '#f8d7da', color: slot.places_remaining > 0 ? '#155724' : '#721c24', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold' }}>
-                  {slot.booked_count}/{slot.max_places} inscrits
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ background: slot.places_remaining > 0 ? '#d4edda' : '#f8d7da', color: slot.places_remaining > 0 ? '#155724' : '#721c24', padding: '0.2rem 0.6rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                  {slot.booked_count}/{slot.max_places}
                 </span>
                 <span style={{ color: COLORS.sky }}>{openSlot === slot.id ? '▲' : '▼'}</span>
               </div>
             </div>
 
             {openSlot === slot.id && (
-              <div style={{ borderTop: `2px solid ${COLORS.skyLight}`, padding: '1rem 1.5rem' }}>
+              <div style={{ borderTop: `2px solid ${COLORS.skyLight}`, padding: '0.8rem 1rem' }}>
                 {bookings[slot.id] && bookings[slot.id].length > 0 && (
-                  <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem' }}>
-                    <thead>
-                      <tr style={{ background: COLORS.skyLight }}>
-                        <th style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'left', color: COLORS.navy }}>Parent</th>
-                        <th style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'left', color: COLORS.navy }}>Enfant</th>
-                        <th style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'left', color: COLORS.navy }}>Email</th>
-                        <th style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'left', color: COLORS.navy }}>Téléphone</th>
-                        <th style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'center', color: COLORS.navy }}>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {bookings[slot.id].map(b => (
-                        <tr key={b.id}>
-                          <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{b.parent_name}</td>
-                          <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{b.child_name}</td>
-                          <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{b.email ? <a href={`mailto:${b.email}`} style={{ color: COLORS.sky }}>{b.email}</a> : '—'}</td>
-                          <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{b.phone || '—'}</td>
-                          <td style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'center' }}>
-                            <button onClick={() => deleteBooking(b.id, slot.id)}
-                              style={{ background: COLORS.red, color: 'white', border: 'none', padding: '0.3rem 0.7rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}>
-                              🗑️
-                            </button>
-                          </td>
+                  <div style={{ overflowX: 'auto', marginBottom: '0.8rem' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                      <thead>
+                        <tr style={{ background: COLORS.skyLight }}>
+                          <th style={{ padding: '0.4rem', border: '1px solid #ddd', textAlign: 'left', color: COLORS.navy }}>Parent</th>
+                          <th style={{ padding: '0.4rem', border: '1px solid #ddd', textAlign: 'left', color: COLORS.navy }}>Enfant</th>
+                          <th style={{ padding: '0.4rem', border: '1px solid #ddd', textAlign: 'left', color: COLORS.navy }}>Email</th>
+                          <th style={{ padding: '0.4rem', border: '1px solid #ddd', textAlign: 'left', color: COLORS.navy }}>Tél.</th>
+                          <th style={{ padding: '0.4rem', border: '1px solid #ddd', textAlign: 'center', color: COLORS.navy }}>❌</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {bookings[slot.id].map(b => (
+                          <tr key={b.id}>
+                            <td style={{ padding: '0.4rem', border: '1px solid #ddd' }}>{b.parent_name}</td>
+                            <td style={{ padding: '0.4rem', border: '1px solid #ddd' }}>{b.child_name}</td>
+                            <td style={{ padding: '0.4rem', border: '1px solid #ddd' }}>{b.email ? <a href={`mailto:${b.email}`} style={{ color: COLORS.sky }}>{b.email}</a> : '—'}</td>
+                            <td style={{ padding: '0.4rem', border: '1px solid #ddd' }}>{b.phone || '—'}</td>
+                            <td style={{ padding: '0.4rem', border: '1px solid #ddd', textAlign: 'center' }}>
+                              <button onClick={() => deleteBooking(b.id, slot.id)}
+                                style={{ background: COLORS.red, color: 'white', border: 'none', padding: '0.2rem 0.5rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}>
+                                🗑️
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
-                {bookings[slot.id] && bookings[slot.id].length === 0 && <p style={{ color: '#888' }}>Aucun inscrit pour le moment.</p>}
+                {bookings[slot.id] && bookings[slot.id].length === 0 && <p style={{ color: '#888', fontSize: '0.9rem' }}>Aucun inscrit.</p>}
 
                 {addingEleve === slot.id ? (
-                  <div style={{ background: COLORS.skyLight, borderRadius: '10px', padding: '1rem', marginBottom: '1rem' }}>
-                    <h4 style={{ color: COLORS.navy, marginTop: 0 }}>➕ Ajouter un élève</h4>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  <div style={{ background: COLORS.skyLight, borderRadius: '8px', padding: '0.8rem', marginBottom: '0.8rem' }}>
+                    <h4 style={{ color: COLORS.navy, marginTop: 0, fontSize: '0.9rem' }}>➕ Ajouter un élève</h4>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.4rem', marginBottom: '0.5rem' }}>
                       <input placeholder="Nom du parent *" value={newEleve.parent_name}
                         onChange={e => setNewEleve({ ...newEleve, parent_name: e.target.value })}
-                        style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid #ddd', fontSize: '0.95rem' }} />
-                      <input placeholder="Prénom de l'enfant *" value={newEleve.child_name}
+                        style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ddd', fontSize: '0.9rem' }} />
+                      <input placeholder="Prénom enfant *" value={newEleve.child_name}
                         onChange={e => setNewEleve({ ...newEleve, child_name: e.target.value })}
-                        style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid #ddd', fontSize: '0.95rem' }} />
+                        style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ddd', fontSize: '0.9rem' }} />
                       <input placeholder="Email (optionnel)" value={newEleve.email}
                         onChange={e => setNewEleve({ ...newEleve, email: e.target.value })}
-                        style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid #ddd', fontSize: '0.95rem' }} />
-                      <input placeholder="Téléphone (optionnel)" value={newEleve.phone}
+                        style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ddd', fontSize: '0.9rem' }} />
+                      <input placeholder="Tél. (optionnel)" value={newEleve.phone}
                         onChange={e => setNewEleve({ ...newEleve, phone: e.target.value })}
-                        style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid #ddd', fontSize: '0.95rem' }} />
+                        style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ddd', fontSize: '0.9rem' }} />
                     </div>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       <button onClick={() => addEleve(slot.id)}
-                        style={{ background: COLORS.navy, color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}>
+                        style={{ background: COLORS.navy, color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem' }}>
                         Confirmer
                       </button>
                       <button onClick={() => { setAddingEleve(null); setNewEleve({ parent_name: '', child_name: '', email: '', phone: '' }) }}
-                        style={{ background: '#ccc', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}>
+                        style={{ background: '#ccc', border: 'none', padding: '0.5rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem' }}>
                         Annuler
                       </button>
                     </div>
                   </div>
                 ) : (
                   <button onClick={() => setAddingEleve(slot.id)}
-                    style={{ background: COLORS.sky, color: 'white', border: 'none', padding: '0.4rem 1rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
+                    style={{ background: COLORS.sky, color: 'white', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.82rem', marginBottom: '0.5rem' }}>
                     ➕ Ajouter un élève
                   </button>
                 )}
 
-                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginTop: '0.3rem' }}>
                   <button onClick={() => startEdit(slot)}
-                    style={{ background: 'orange', color: 'white', border: 'none', padding: '0.4rem 1rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem' }}>
+                    style={{ background: 'orange', color: 'white', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.82rem' }}>
                     ✏️ Modifier
                   </button>
+                  <button onClick={() => { setNewSlot({ title: slot.title, date: slot.date, time_start: slot.time_start.slice(0,5), max_places: slot.max_places }); setShowForm(true); window.scrollTo(0,0) }}
+                    style={{ background: COLORS.green, color: 'white', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.82rem' }}>
+                    📋 Copier
+                  </button>
                   <button onClick={() => deleteSlot(slot.id)}
-                    style={{ background: COLORS.red, color: 'white', border: 'none', padding: '0.4rem 1rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem' }}>
+                    style={{ background: COLORS.red, color: 'white', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.82rem' }}>
                     🗑️ Supprimer
                   </button>
                 </div>
@@ -430,47 +439,49 @@ export default function Admin() {
 
         {slotsPasses.length > 0 && (
           <>
-            <h3 style={{ color: '#888', marginTop: '2rem' }}>📁 Créneaux passés</h3>
+            <h3 style={{ color: '#888', marginTop: '1.5rem', fontSize: '1rem' }}>📁 Créneaux passés</h3>
             {slotsPasses.map(slot => (
               <div key={slot.id} style={{ background: '#f9f9f9', borderRadius: '12px', marginBottom: '0.8rem', border: '1px solid #eee', overflow: 'hidden' }}>
                 <div onClick={() => toggleSlot(slot.id)}
-                  style={{ padding: '0.8rem 1.5rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', opacity: 0.7 }}>
-                  <div>
-                    <span style={{ color: '#888', fontSize: '0.85rem', marginRight: '0.8rem' }}>
+                  style={{ padding: '0.7rem 1rem', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', opacity: 0.7, flexWrap: 'wrap', gap: '0.3rem' }}>
+                  <div style={{ fontSize: '0.9rem' }}>
+                    <span style={{ color: '#888', marginRight: '0.5rem' }}>
                       {new Date(slot.date).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })}
                     </span>
                     <strong style={{ color: '#555' }}>{slot.title}</strong>
-                    <span style={{ color: '#aaa', marginLeft: '0.5rem', fontSize: '0.9rem' }}>à {slot.time_start.slice(0,5)}</span>
+                    <span style={{ color: '#aaa', marginLeft: '0.4rem' }}>à {slot.time_start.slice(0,5)}</span>
                   </div>
-                  <span style={{ color: '#aaa', fontSize: '0.85rem' }}>{slot.booked_count} inscrits — {openSlot === slot.id ? '▲' : '▼'}</span>
+                  <span style={{ color: '#aaa', fontSize: '0.82rem' }}>{slot.booked_count} inscrits {openSlot === slot.id ? '▲' : '▼'}</span>
                 </div>
                 {openSlot === slot.id && (
-                  <div style={{ borderTop: '1px solid #eee', padding: '1rem 1.5rem' }}>
+                  <div style={{ borderTop: '1px solid #eee', padding: '0.8rem 1rem' }}>
                     {bookings[slot.id] && bookings[slot.id].length > 0 && (
-                      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                        <thead>
-                          <tr style={{ background: '#f0f0f0' }}>
-                            <th style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'left' }}>Parent</th>
-                            <th style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'left' }}>Enfant</th>
-                            <th style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'left' }}>Email</th>
-                            <th style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'left' }}>Téléphone</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {bookings[slot.id].map(b => (
-                            <tr key={b.id}>
-                              <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{b.parent_name}</td>
-                              <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{b.child_name}</td>
-                              <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{b.email || '—'}</td>
-                              <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{b.phone || '—'}</td>
+                      <div style={{ overflowX: 'auto' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                          <thead>
+                            <tr style={{ background: '#f0f0f0' }}>
+                              <th style={{ padding: '0.4rem', border: '1px solid #ddd', textAlign: 'left' }}>Parent</th>
+                              <th style={{ padding: '0.4rem', border: '1px solid #ddd', textAlign: 'left' }}>Enfant</th>
+                              <th style={{ padding: '0.4rem', border: '1px solid #ddd', textAlign: 'left' }}>Email</th>
+                              <th style={{ padding: '0.4rem', border: '1px solid #ddd', textAlign: 'left' }}>Tél.</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {bookings[slot.id].map(b => (
+                              <tr key={b.id}>
+                                <td style={{ padding: '0.4rem', border: '1px solid #ddd' }}>{b.parent_name}</td>
+                                <td style={{ padding: '0.4rem', border: '1px solid #ddd' }}>{b.child_name}</td>
+                                <td style={{ padding: '0.4rem', border: '1px solid #ddd' }}>{b.email || '—'}</td>
+                                <td style={{ padding: '0.4rem', border: '1px solid #ddd' }}>{b.phone || '—'}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     )}
                     <button onClick={() => deleteSlot(slot.id)}
-                      style={{ marginTop: '0.8rem', background: COLORS.red, color: 'white', border: 'none', padding: '0.4rem 1rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem' }}>
-                      🗑️ Supprimer ce créneau
+                      style={{ marginTop: '0.5rem', background: COLORS.red, color: 'white', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.82rem' }}>
+                      🗑️ Supprimer
                     </button>
                   </div>
                 )}
