@@ -3,6 +3,11 @@ import { supabase } from '../lib/supabase'
 
 const ADMIN_PASSWORD = '0201'
 
+const EVENT_TYPES = [
+  { value: 'stage', label: '🏕️ Stage' },
+  { value: 'concours', label: '🏆 Concours' }
+]
+
 const COURS_TYPES = [
   'Licol Blanc',
   'Prépa Bronze/Argent',
@@ -35,9 +40,12 @@ export default function Admin() {
   const [newEleve, setNewEleve] = useState({ parent_name: '', child_name: '', email: '', phone: '' })
   const [editingSlot, setEditingSlot] = useState(null)
   const [editForm, setEditForm] = useState({})
+  const [showEventForm, setShowEventForm] = useState(false)
+  const [newEvent, setNewEvent] = useState({ title: '', type: 'stage', date_start: '', date_end: '', description: '' })
+  const [events, setEvents] = useState([])
 
-  useEffect(() => {
-    if (auth) fetchSlots()
+useEffect(() => {
+    if (auth) { fetchSlots(); fetchEvents() }
   }, [auth])
 
   async function fetchSlots() {
@@ -46,6 +54,14 @@ export default function Admin() {
       .select('*')
       .order('date')
     setSlots(data || [])
+  }
+
+  async function fetchEvents() {
+    const { data } = await supabase
+      .from('events')
+      .select('*')
+      .order('date_start')
+    setEvents(data || [])
   }
 
   async function fetchBookings(slotId) {
@@ -218,9 +234,13 @@ export default function Admin() {
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             <button onClick={() => window.location.href = '/.netlify/functions/google-auth'}
               style={{ background: '#4285f4', color: 'white', border: 'none', padding: '0.6rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>
-              📅 Connecter Google Agenda
+              📅 Google Agenda
             </button>
-            <button onClick={() => { setShowForm(!showForm); setEditingSlot(null) }}
+            <button onClick={() => { setShowEventForm(!showEventForm); setShowForm(false); setEditingSlot(null) }}
+              style={{ background: COLORS.red, color: 'white', border: 'none', padding: '0.6rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>
+              {showEventForm ? '✕ Fermer' : '➕ Stage/Concours'}
+            </button>
+            <button onClick={() => { setShowForm(!showForm); setShowEventForm(false); setEditingSlot(null) }}
               style={{ background: COLORS.sky, color: 'white', border: 'none', padding: '0.6rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>
               {showForm ? '✕ Fermer' : '➕ Nouveau créneau'}
             </button>
@@ -231,6 +251,64 @@ export default function Admin() {
           <div style={{ background: message.type === 'success' ? '#d4edda' : '#f8d7da', color: message.type === 'success' ? '#155724' : '#721c24', padding: '0.8rem 1rem', borderRadius: '8px', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span>{message.text}</span>
             <button onClick={() => setMessage(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}>✕</button>
+          </div>
+        )}
+        
+{showEventForm && (
+          <div style={{ background: 'white', borderRadius: '16px', padding: '1.2rem', marginBottom: '1.5rem', boxShadow: '0 4px 16px rgba(231,76,60,0.15)', border: `2px solid ${COLORS.red}` }}>
+            <h3 style={{ color: COLORS.navy, marginTop: 0, fontSize: '1rem' }}>➕ Nouveau stage ou concours</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Type *</label>
+                <select value={newEvent.type} onChange={e => setNewEvent({ ...newEvent, type: e.target.value })}
+                  style={{ width: '100%', padding: '0.6rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '0.95rem' }}>
+                  {EVENT_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Titre *</label>
+                <input placeholder="Ex: Stage vacances été" value={newEvent.title}
+                  onChange={e => setNewEvent({ ...newEvent, title: e.target.value })}
+                  style={{ width: '100%', padding: '0.6rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '0.95rem', boxSizing: 'border-box' }} />
+              </div>
+              <div>
+                <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Date de début *</label>
+                <input type="date" value={newEvent.date_start}
+                  onChange={e => setNewEvent({ ...newEvent, date_start: e.target.value })}
+                  style={{ width: '100%', padding: '0.6rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '0.95rem', boxSizing: 'border-box' }} />
+              </div>
+              <div>
+                <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Date de fin *</label>
+                <input type="date" value={newEvent.date_end}
+                  onChange={e => setNewEvent({ ...newEvent, date_end: e.target.value })}
+                  style={{ width: '100%', padding: '0.6rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '0.95rem', boxSizing: 'border-box' }} />
+              </div>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <label style={{ display: 'block', color: COLORS.navy, marginBottom: '0.3rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Description (optionnel)</label>
+                <textarea placeholder="Ex: Stage 3 jours, tous niveaux..." value={newEvent.description}
+                  onChange={e => setNewEvent({ ...newEvent, description: e.target.value })}
+                  rows={2}
+                  style={{ width: '100%', padding: '0.6rem', borderRadius: '8px', border: '1px solid #ddd', fontSize: '0.95rem', boxSizing: 'border-box', resize: 'vertical' }} />
+              </div>
+            </div>
+            <button onClick={async () => {
+              if (!newEvent.title || !newEvent.date_start || !newEvent.date_end) {
+                setMessage({ type: 'error', text: 'Remplis tous les champs obligatoires !' })
+                return
+              }
+              const { error } = await supabase.from('events').insert(newEvent)
+              if (!error) {
+                setMessage({ type: 'success', text: `${newEvent.type === 'stage' ? 'Stage' : 'Concours'} créé !` })
+                setNewEvent({ title: '', type: 'stage', date_start: '', date_end: '', description: '' })
+                setShowEventForm(false)
+                fetchEvents()
+              } else {
+                setMessage({ type: 'error', text: 'Erreur lors de la création.' })
+              }
+            }}
+              style={{ marginTop: '1rem', background: COLORS.red, color: 'white', border: 'none', padding: '0.7rem 2rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.95rem' }}>
+              Créer
+            </button>
           </div>
         )}
 
