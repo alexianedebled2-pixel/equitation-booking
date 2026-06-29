@@ -15,6 +15,8 @@ const COURS_TYPES = [
 const COLORS = {
   navy: '#1a2744',
   sky: '#4aa8d8',
+  beige: '#f5f0e8',
+  textLight: '#7a6a5a'
 }
 
 export default function SlotList({ onSelectSlot }) {
@@ -39,12 +41,18 @@ export default function SlotList({ onSelectSlot }) {
     ? slots
     : slots.filter(s => s.title.includes(filtre))
 
-  if (loading) return <p style={{ textAlign: 'center', color: '#555' }}>Chargement des créneaux...</p>
+  if (loading) return (
+    <div style={{ textAlign: 'center', padding: '3rem', color: COLORS.textLight }}>
+      <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🐴</div>
+      <p>Chargement des créneaux...</p>
+    </div>
+  )
 
   if (slots.length === 0) return (
-    <div style={{ textAlign: 'center', padding: '2rem', color: '#555' }}>
-      <p>Aucun créneau disponible pour le moment.</p>
-      <p>Revenez bientôt ! 🐴</p>
+    <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '20px', boxShadow: '0 4px 20px rgba(26,39,68,0.06)' }}>
+      <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🐴</div>
+      <p style={{ color: COLORS.textLight, fontSize: '1.1rem' }}>Aucun créneau disponible pour le moment.</p>
+      <p style={{ color: COLORS.textLight }}>Revenez bientôt !</p>
     </div>
   )
 
@@ -59,12 +67,14 @@ export default function SlotList({ onSelectSlot }) {
             style={{
               background: filtre === type ? COLORS.navy : 'white',
               color: filtre === type ? 'white' : COLORS.navy,
-              border: `2px solid ${COLORS.navy}`,
-              padding: '0.4rem 0.9rem',
-              borderRadius: '20px',
+              border: `2px solid ${filtre === type ? COLORS.navy : '#ddd'}`,
+              padding: '0.4rem 1rem',
+              borderRadius: '50px',
               cursor: 'pointer',
-              fontSize: '0.85rem',
-              fontWeight: filtre === type ? 'bold' : 'normal'
+              fontSize: '0.82rem',
+              fontWeight: filtre === type ? 'bold' : 'normal',
+              boxShadow: filtre === type ? '0 2px 8px rgba(26,39,68,0.2)' : 'none',
+              transition: 'all 0.2s'
             }}>
             {type}
           </button>
@@ -72,39 +82,46 @@ export default function SlotList({ onSelectSlot }) {
       </div>
 
       {slotsFiltres.length === 0 && (
-        <p style={{ color: '#888', textAlign: 'center' }}>Aucun créneau pour ce niveau.</p>
+        <div style={{ textAlign: 'center', padding: '2rem', background: 'white', borderRadius: '16px' }}>
+          <p style={{ color: COLORS.textLight }}>Aucun créneau pour ce niveau.</p>
+        </div>
       )}
 
       <div style={{ display: 'grid', gap: '1rem' }}>
         {slotsFiltres.map(slot => (
           <div key={slot.id} style={{
             background: 'white',
-            border: slot.places_remaining > 0 ? `2px solid ${COLORS.navy}` : '2px solid #ddd',
-            borderRadius: '10px',
-            padding: '1rem',
+            borderRadius: '16px',
+            padding: '1.2rem 1.5rem',
+            boxShadow: '0 4px 20px rgba(26,39,68,0.06)',
             display: 'flex',
-            flexDirection: 'column',
-            gap: '0.8rem',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '1rem',
+            borderLeft: `5px solid ${slot.places_remaining > 0 ? COLORS.sky : '#ddd'}`,
             opacity: slot.places_remaining > 0 ? 1 : 0.6
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem' }}>
-              <h3 style={{ color: COLORS.navy, margin: 0, fontSize: '1rem' }}>{slot.title}</h3>
+            <div>
+              <h3 style={{ color: COLORS.navy, margin: '0 0 0.4rem 0', fontSize: '1rem' }}>{slot.title}</h3>
+              <p style={{ margin: '0.2rem 0', color: COLORS.textLight, fontSize: '0.9rem' }}>
+                📅 {new Date(slot.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
+              </p>
+              <p style={{ margin: '0.2rem 0', color: COLORS.textLight, fontSize: '0.9rem' }}>
+                🕐 {slot.time_start.slice(0,5)} – {slot.time_end.slice(0,5)}
+              </p>
               <span style={{
-                background: slot.places_remaining > 0 ? '#d4edda' : '#f8d7da',
+                display: 'inline-block',
+                marginTop: '0.4rem',
+                background: slot.places_remaining > 0 ? '#e8f4fd' : '#fdecea',
                 color: slot.places_remaining > 0 ? '#155724' : '#721c24',
-                padding: '0.2rem 0.7rem',
-                borderRadius: '20px',
+                padding: '0.2rem 0.8rem',
+                borderRadius: '50px',
                 fontSize: '0.8rem',
-                fontWeight: 'bold',
-                whiteSpace: 'nowrap'
+                fontWeight: 'bold'
               }}>
-                {slot.places_remaining > 0 ? `✅ ${slot.places_remaining} place(s)` : '❌ Complet'}
+                {slot.places_remaining > 0 ? `✅ ${slot.places_remaining} place(s) disponible(s)` : '❌ Complet'}
               </span>
-            </div>
-
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', fontSize: '0.9rem', color: '#555' }}>
-              <span>📅 {new Date(slot.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
-              <span>🕐 {slot.time_start.slice(0,5)} – {slot.time_end.slice(0,5)}</span>
             </div>
 
             <button
@@ -114,13 +131,15 @@ export default function SlotList({ onSelectSlot }) {
                 background: slot.places_remaining > 0 ? COLORS.navy : '#ccc',
                 color: 'white',
                 border: 'none',
-                padding: '0.7rem',
-                borderRadius: '8px',
+                padding: '0.8rem 1.5rem',
+                borderRadius: '50px',
                 cursor: slot.places_remaining > 0 ? 'pointer' : 'not-allowed',
-                fontSize: '1rem',
-                width: '100%'
+                fontSize: '0.95rem',
+                fontWeight: 'bold',
+                whiteSpace: 'nowrap',
+                boxShadow: slot.places_remaining > 0 ? '0 4px 12px rgba(26,39,68,0.2)' : 'none'
               }}>
-              {slot.places_remaining > 0 ? "M'inscrire" : 'Complet'}
+              {slot.places_remaining > 0 ? "M'inscrire →" : 'Complet'}
             </button>
           </div>
         ))}
