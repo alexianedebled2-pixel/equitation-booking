@@ -126,9 +126,39 @@ useEffect(() => {
     const startMin = editForm.time_start.slice(3, 5)
     const endHour = startHour === 23 ? 0 : startHour + 1
     const time_end = `${String(endHour).padStart(2, '0')}:${startMin}`
+
+    const slotBefore = slots.find(s => s.id === editingSlot)
+
     const { error } = await supabase.from('slots').update({ ...editForm, time_end }).eq('id', editingSlot)
     if (!error) {
-      setMessage({ type: 'success', text: 'Créneau modifié !' })
+      const { data: inscrits } = await supabase
+        .from('bookings')
+        .select('email, child_name')
+        .eq('slot_id', editingSlot)
+        .neq('email', '')
+
+      if (inscrits && inscrits.length > 0) {
+        const emails = inscrits.map(b => b.email).filter(Boolean)
+        if (emails.length > 0) {
+          await fetch('/.netlify/functions/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              emails,
+              subject: '📅 Modification de votre cours — Ecurie de Groynne',
+              message: `Bonjour,<br/><br/>Votre cours <strong>${slotBefore.title}</strong> a été modifié :<br/><br/>
+              📅 Nouvelle date : <strong>${new Date(editForm.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</strong><br/>
+              🕐 Nouvel horaire : <strong>${editForm.time_start} – ${time_end}</strong><br/>
+              📚 Niveau : <strong>${editForm.title}</strong><br/><br/>
+              En cas de question, contactez François au 0478/60.56.89.<br/><br/>À bientôt à l'Ecurie de Groynne ! 🐴`
+            })
+          })
+          setMessage({ type: 'success', text: `Créneau modifié — ${emails.length} email(s) envoyé(s) aux parents.` })
+        }
+      } else {
+        setMessage({ type: 'success', text: 'Créneau modifié !' })
+      }
+
       setEditingSlot(null)
       setEditForm({})
       fetchSlots()
@@ -139,7 +169,32 @@ useEffect(() => {
 
   async function deleteSlot(slotId) {
     if (!confirm('Supprimer ce créneau et toutes ses inscriptions ?')) return
+    
+    const slot = slots.find(s => s.id === slotId)
+    const { data: inscrits } = await supabase
+      .from('bookings')
+      .select('email, child_name')
+      .eq('slot_id', slotId)
+      .neq('email', '')
+
     await supabase.from('slots').delete().eq('id', slotId)
+
+    if (inscrits && inscrits.length > 0) {
+      const emails = inscrits.map(b => b.email).filter(Boolean)
+      if (emails.length > 0) {
+        await fetch('/.netlify/functions/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            emails,
+            subject: '⚠️ Annulation de votre cours — Ecurie de Groynne',
+            message: `Bonjour,<br/><br/>Nous vous informons que le cours <strong>${slot.title}</strong> prévu le <strong>${new Date(slot.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</strong> à <strong>${slot.time_start.slice(0,5)}</strong> a été annulé.<br/><br/>Nous nous excusons pour la gêne occasionnée. N'hésitez pas à vous inscrire sur un autre créneau ou à contacter François au 0478/60.56.89.<br/><br/>À bientôt à l'Ecurie de Groynne ! 🐴`
+          })
+        })
+        setMessage({ type: 'success', text: `Créneau supprimé — ${emails.length} email(s) envoyé(s) aux parents.` })
+      }
+    }
+
     setOpenSlot(null)
     fetchSlots()
   }
