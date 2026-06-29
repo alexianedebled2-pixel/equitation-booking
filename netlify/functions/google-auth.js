@@ -3,8 +3,7 @@ exports.handler = async () => {
     client_id: process.env.GOOGLE_CLIENT_ID,
     redirect_uri: `${process.env.URL}/.netlify/functions/google-callback`,
     response_type: 'code',
-    scope: 'https://www.googleapis.com/auth/calendar',
-    access_type: 'offline',
+scope: 'https://www.googleapis.com/auth/calendar.events',
     prompt: 'consent'
   })
 
