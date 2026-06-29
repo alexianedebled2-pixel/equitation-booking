@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { sendEmailsToAll } from '../lib/email'
 
 const ADMIN_PASSWORD = '0201'
 
@@ -140,20 +141,12 @@ useEffect(() => {
       if (inscrits && inscrits.length > 0) {
         const emails = inscrits.map(b => b.email).filter(Boolean)
         if (emails.length > 0) {
-          await fetch('/.netlify/functions/send-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              emails,
-              subject: '📅 Modification de votre cours — Ecurie de Groynne',
-              message: `Bonjour,<br/><br/>Votre cours <strong>${slotBefore.title}</strong> a été modifié :<br/><br/>
-              📅 Nouvelle date : <strong>${new Date(editForm.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</strong><br/>
-              🕐 Nouvel horaire : <strong>${editForm.time_start} – ${time_end}</strong><br/>
-              📚 Niveau : <strong>${editForm.title}</strong><br/><br/>
-              En cas de question, contactez François au 0478/60.56.89.<br/><br/>À bientôt à l'Ecurie de Groynne ! 🐴`
-            })
-          })
-          setMessage({ type: 'success', text: `Créneau modifié — ${emails.length} email(s) envoyé(s) aux parents.` })
+          const sent = await sendEmailsToAll(
+            emails,
+            'Modification de votre cours — Ecurie de Groynne',
+            `Bonjour,\n\nVotre cours ${slotBefore.title} a été modifié :\n\nNouvelle date : ${new Date(editForm.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}\nNouvel horaire : ${editForm.time_start} – ${time_end}\nNiveau : ${editForm.title}\n\nEn cas de question, contactez François au 0478/60.56.89.\n\nÀ bientôt à l'Ecurie de Groynne !`
+          )
+          setMessage({ type: 'success', text: `Créneau modifié — ${sent} email(s) envoyé(s) aux parents.` })
         }
       } else {
         setMessage({ type: 'success', text: 'Créneau modifié !' })
@@ -182,16 +175,12 @@ useEffect(() => {
     if (inscrits && inscrits.length > 0) {
       const emails = inscrits.map(b => b.email).filter(Boolean)
       if (emails.length > 0) {
-        await fetch('/.netlify/functions/send-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            emails,
-            subject: '⚠️ Annulation de votre cours — Ecurie de Groynne',
-            message: `Bonjour,<br/><br/>Nous vous informons que le cours <strong>${slot.title}</strong> prévu le <strong>${new Date(slot.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</strong> à <strong>${slot.time_start.slice(0,5)}</strong> a été annulé.<br/><br/>Nous nous excusons pour la gêne occasionnée. N'hésitez pas à vous inscrire sur un autre créneau ou à contacter François au 0478/60.56.89.<br/><br/>À bientôt à l'Ecurie de Groynne ! 🐴`
-          })
-        })
-        setMessage({ type: 'success', text: `Créneau supprimé — ${emails.length} email(s) envoyé(s) aux parents.` })
+        const sent = await sendEmailsToAll(
+        emails,
+        'Annulation de votre cours — Ecurie de Groynne',
+        `Bonjour,\n\nNous vous informons que le cours ${slot.title} prévu le ${new Date(slot.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })} à ${slot.time_start.slice(0,5)} a été annulé.\n\nNous nous excusons pour la gêne occasionnée. N'hésitez pas à vous inscrire sur un autre créneau ou à contacter François au 0478/60.56.89.\n\nÀ bientôt à l'Ecurie de Groynne !`
+      )
+      setMessage({ type: 'success', text: `Créneau supprimé — ${sent} email(s) envoyé(s) aux parents.` })
       }
     }
 
