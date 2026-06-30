@@ -71,16 +71,27 @@ useEffect(() => {
     setSyncing(true)
     const { data: allSlots } = await supabase.from('slots').select('*')
     let count = 0
+    let errors = 0
     for (const s of allSlots) {
-      await fetch('/.netlify/functions/update-calendar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slot_id: s.id, action: 'create' })
-      })
-      count++
+      try {
+        const res = await fetch('/.netlify/functions/update-calendar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slot_id: s.id, action: 'create' })
+        })
+        if (res.ok) {
+          count++
+        } else {
+          errors++
+          console.error('Erreur slot', s.id, await res.text())
+        }
+      } catch (err) {
+        errors++
+        console.error('Erreur fetch', s.id, err)
+      }
     }
     setSyncing(false)
-    setMessage({ type: 'success', text: `${count} créneau(x) synchronisé(s) avec Google Agenda !` })
+    setMessage({ type: 'success', text: `${count} créneau(x) synchronisé(s), ${errors} erreur(s).` })
   }
 
   async function fetchBookings(slotId) {
