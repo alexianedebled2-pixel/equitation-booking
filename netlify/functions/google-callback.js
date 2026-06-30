@@ -21,9 +21,10 @@ exports.handler = async (event) => {
   })
 
   const tokens = await tokenRes.json()
+  console.log('TOKENS RECUS:', JSON.stringify(tokens))
 
   if (!tokens.access_token) {
-    return { statusCode: 400, body: 'Erreur lors de la récupération du token' }
+    return { statusCode: 400, body: 'Erreur: ' + JSON.stringify(tokens) }
   }
 
   // Stocke les tokens dans Supabase
