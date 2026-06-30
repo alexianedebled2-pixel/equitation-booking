@@ -33,6 +33,7 @@ async function getValidToken(supabase) {
 }
 
 exports.handler = async (event) => {
+  console.log('UPDATE-CALENDAR APPELE avec:', event.body)
   const { slot_id, action } = JSON.parse(event.body)
 
   const supabase = createClient(
