@@ -33,12 +33,14 @@ exports.handler = async (event) => {
     process.env.SUPABASE_SERVICE_KEY
   )
 
-  await supabase.from('google_tokens').upsert({
+  const { data: saveData, error: saveError } = await supabase.from('google_tokens').upsert({
     id: 'moniteur',
     access_token: tokens.access_token,
     refresh_token: tokens.refresh_token,
     expires_at: Date.now() + tokens.expires_in * 1000
   })
+
+  console.log('SAVE RESULT:', JSON.stringify(saveData), 'ERROR:', JSON.stringify(saveError))
 
   return {
     statusCode: 302,
