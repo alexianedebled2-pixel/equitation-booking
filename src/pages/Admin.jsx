@@ -45,6 +45,7 @@ export default function Admin() {
   const [showEventForm, setShowEventForm] = useState(false)
   const [newEvent, setNewEvent] = useState({ title: '', type: 'stage', date_start: '', date_end: '', description: '' })
   const [events, setEvents] = useState([])
+  const [syncing, setSyncing] = useState(false)
 
 useEffect(() => {
     if (auth) { fetchSlots(); fetchEvents() }
@@ -64,6 +65,22 @@ useEffect(() => {
       .select('*')
       .order('date_start')
     setEvents(data || [])
+  }
+
+  async function syncAllSlots() {
+    setSyncing(true)
+    const { data: allSlots } = await supabase.from('slots').select('*')
+    let count = 0
+    for (const s of allSlots) {
+      await fetch('/.netlify/functions/update-calendar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slot_id: s.id, action: 'create' })
+      })
+      count++
+    }
+    setSyncing(false)
+    setMessage({ type: 'success', text: `${count} créneau(x) synchronisé(s) avec Google Agenda !` })
   }
 
   async function fetchBookings(slotId) {
@@ -277,9 +294,13 @@ useEffect(() => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
           <h1 style={{ color: COLORS.navy, margin: 0, fontSize: 'clamp(1.1rem, 4vw, 1.6rem)' }}>🧑‍🏫 Espace Moniteurs</h1>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <button onClick={() => window.location.href = '/.netlify/functions/google-auth'}
+           <button onClick={() => window.location.href = '/.netlify/functions/google-auth'}
               style={{ background: '#4285f4', color: 'white', border: 'none', padding: '0.6rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>
               📅 Google Agenda
+            </button>
+            <button onClick={syncAllSlots} disabled={syncing}
+              style={{ background: '#34a853', color: 'white', border: 'none', padding: '0.6rem 1rem', borderRadius: '8px', cursor: syncing ? 'wait' : 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>
+              {syncing ? '⏳ Synchronisation...' : '🔄 Synchroniser tout'}
             </button>
             <button onClick={() => { setShowEventForm(!showEventForm); setShowForm(false); setEditingSlot(null) }}
               style={{ background: COLORS.red, color: 'white', border: 'none', padding: '0.6rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>
