@@ -39,17 +39,17 @@ export default function Home() {
         boxShadow: '0 2px 20px rgba(0,0,0,0.3)'
       }}>
         <img src="/logo.png" alt="Ecurie de Groynne" style={{ height: '60px', mixBlendMode: 'screen', filter: 'invert(1)' }} />
-        <nav style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+        <nav style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
           <button onClick={() => { setShowSlots(false); setSelectedSlot(null); setConfirmed(false) }}
-            style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '0.9rem', opacity: 0.8 }}>
+            style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '0.85rem', opacity: 0.8, whiteSpace: 'nowrap' }}>
             Accueil
           </button>
           <button onClick={() => setShowMyBookings(true)}
-            style={{ background: 'none', border: '1px solid rgba(255,255,255,0.4)', color: 'white', cursor: 'pointer', fontSize: '0.9rem', padding: '0.4rem 1rem', borderRadius: '20px' }}>
+            style={{ background: 'none', border: '1px solid rgba(255,255,255,0.4)', color: 'white', cursor: 'pointer', fontSize: '0.8rem', padding: '0.3rem 0.7rem', borderRadius: '20px', whiteSpace: 'nowrap' }}>
             Mes inscriptions
           </button>
           <button onClick={() => setShowSlots(true)}
-            style={{ background: COLORS.sky, border: 'none', color: 'white', cursor: 'pointer', fontSize: '0.9rem', padding: '0.4rem 1rem', borderRadius: '20px', fontWeight: 'bold' }}>
+            style={{ background: COLORS.sky, border: 'none', color: 'white', cursor: 'pointer', fontSize: '0.8rem', padding: '0.3rem 0.7rem', borderRadius: '20px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>
             Réserver
           </button>
         </nav>
