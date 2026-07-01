@@ -32,14 +32,12 @@ export default function Home() {
         padding: '0.8rem 1rem',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         position: 'sticky',
         top: 0,
         zIndex: 100,
         boxShadow: '0 2px 20px rgba(0,0,0,0.3)'
       }}>
-        
-        <img src="/logo.png" alt="Ecurie de Groynne" style={{ height: '40px', mixBlendMode: 'screen', filter: 'invert(1)' }} />
         <nav style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
           <button onClick={() => { setShowSlots(false); setSelectedSlot(null); setConfirmed(false) }}
             style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '0.85rem', opacity: 0.8, whiteSpace: 'nowrap' }}>
@@ -65,6 +63,7 @@ export default function Home() {
           overflow: 'hidden'
         }}>
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.05, backgroundImage: 'repeating-linear-gradient(45deg, white 0, white 1px, transparent 0, transparent 50%)', backgroundSize: '20px 20px' }} />
+         <img src="/logo.png" alt="Ecurie de Groynne" style={{ height: '80px', mixBlendMode: 'screen', filter: 'invert(1)', marginBottom: '1rem' }} />
           <p style={{ color: COLORS.sky, fontSize: '0.9rem', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
             Bienvenue à l'
           </p>
