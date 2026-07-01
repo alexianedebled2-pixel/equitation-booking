@@ -29,7 +29,7 @@ export default function Home() {
 
       <header style={{
         background: COLORS.navy,
-        padding: '1rem 2rem',
+        padding: '0.8rem 1rem',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -38,6 +38,7 @@ export default function Home() {
         zIndex: 100,
         boxShadow: '0 2px 20px rgba(0,0,0,0.3)'
       }}>
+        
         <img src="/logo.png" alt="Ecurie de Groynne" style={{ height: '40px', mixBlendMode: 'screen', filter: 'invert(1)' }} />
         <nav style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
           <button onClick={() => { setShowSlots(false); setSelectedSlot(null); setConfirmed(false) }}
