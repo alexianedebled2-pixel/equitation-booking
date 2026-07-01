@@ -2,6 +2,7 @@ import { useState } from 'react'
 import SlotList from '../components/SlotList'
 import BookingForm from '../components/BookingForm'
 import Calendar from '../components/Calendar'
+import MyBookings from './MyBookings'
 
 const COLORS = {
   navy: '#1a2744',
@@ -17,6 +18,11 @@ export default function Home() {
   const [showSlots, setShowSlots] = useState(false)
   const [selectedSlot, setSelectedSlot] = useState(null)
   const [confirmed, setConfirmed] = useState(false)
+  const [showMyBookings, setShowMyBookings] = useState(false)
+
+  if (showMyBookings) {
+    return <MyBookings onBack={() => setShowMyBookings(false)} />
+  }
 
   return (
     <div style={{ fontFamily: "'Georgia', serif", background: COLORS.beigeLight, minHeight: '100vh' }}>
@@ -33,10 +39,14 @@ export default function Home() {
         boxShadow: '0 2px 20px rgba(0,0,0,0.3)'
       }}>
         <img src="/logo.png" alt="Ecurie de Groynne" style={{ height: '60px', mixBlendMode: 'screen', filter: 'invert(1)' }} />
-        <nav style={{ display: 'flex', gap: '1rem' }}>
+        <nav style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
           <button onClick={() => { setShowSlots(false); setSelectedSlot(null); setConfirmed(false) }}
             style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '0.9rem', opacity: 0.8 }}>
             Accueil
+          </button>
+          <button onClick={() => setShowMyBookings(true)}
+            style={{ background: 'none', border: '1px solid rgba(255,255,255,0.4)', color: 'white', cursor: 'pointer', fontSize: '0.9rem', padding: '0.4rem 1rem', borderRadius: '20px' }}>
+            Mes inscriptions
           </button>
           <button onClick={() => setShowSlots(true)}
             style={{ background: COLORS.sky, border: 'none', color: 'white', cursor: 'pointer', fontSize: '0.9rem', padding: '0.4rem 1rem', borderRadius: '20px', fontWeight: 'bold' }}>
@@ -64,21 +74,7 @@ export default function Home() {
           <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 'clamp(1rem, 2.5vw, 1.2rem)', maxWidth: '600px', margin: '0 auto 2rem auto', lineHeight: '1.8' }}>
             Réservez votre leçon d'équitation durant les congés scolaires. Les places sont limitées !
           </p>
-          <button onClick={() => setShowSlots(true)}
-            style={{
-              background: COLORS.sky,
-              color: 'white',
-              border: 'none',
-              padding: '1rem 3rem',
-              fontSize: '1.1rem',
-              borderRadius: '50px',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              letterSpacing: '1px',
-              boxShadow: '0 4px 20px rgba(74,168,216,0.4)'
-            }}>
-            🐴 Réserver ma leçon
-          </button>
+        
         </div>
       )}
 
