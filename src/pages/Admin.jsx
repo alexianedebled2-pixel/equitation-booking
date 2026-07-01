@@ -17,7 +17,11 @@ const COURS_TYPES = [
   'Prépa Diamant',
   'Prépa Degré 1',
   'Prépa Degré 2',
-  'Prépa Degré 3'
+  'Prépa Degré 3 et +',
+  'Cours individuel',
+  'Balade +12 ans',
+  'Balade -12 ans',
+  'Prise de contact'
 ]
 
 const COLORS = {
@@ -309,10 +313,12 @@ useEffect(() => {
               style={{ background: '#4285f4', color: 'white', border: 'none', padding: '0.6rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>
               📅 Google Agenda
             </button>
-            <button onClick={syncAllSlots} disabled={syncing}
-              style={{ background: '#34a853', color: 'white', border: 'none', padding: '0.6rem 1rem', borderRadius: '8px', cursor: syncing ? 'wait' : 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>
-              {syncing ? '⏳ Synchronisation...' : '🔄 Synchroniser tout'}
-            </button>
+            {false && (
+              <button onClick={syncAllSlots} disabled={syncing}
+                style={{ background: '#34a853', color: 'white', border: 'none', padding: '0.6rem 1rem', borderRadius: '8px', cursor: syncing ? 'wait' : 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                {syncing ? '⏳ Synchronisation...' : '🔄 Synchroniser tout'}
+              </button>
+            )}
             <button onClick={() => { setShowEventForm(!showEventForm); setShowForm(false); setEditingSlot(null) }}
               style={{ background: COLORS.red, color: 'white', border: 'none', padding: '0.6rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>
               {showEventForm ? '✕ Fermer' : '➕ Stage/Concours'}
